@@ -3,8 +3,8 @@ import { createContext, useState } from "react";
 export const canvasContext = createContext(null);
 
 const CanvasContextProvider = (props) => {
-  const [canvasBackgroundColor, setCanvasBackgroundColor] = useState("#ffffff");
-  const contextValue = { canvasBackgroundColor, setCanvasBackgroundColor };
+  const [brushColor, setBrushColor] = useState("#000000");
+  const contextValue = { brushColor, setBrushColor };
   return (
     <canvasContext.Provider value={contextValue}>
       {props.children}

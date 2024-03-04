@@ -8,7 +8,7 @@ const Canvas = ({ backgroundColor }) => {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const { canvasBackgroundColor,setCanvasBackgroundColor } = useContext(canvasContext);
+  const { brushColor, setBrushColor } = useContext(canvasContext);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -18,6 +18,7 @@ const Canvas = ({ backgroundColor }) => {
     canvas.style.height = "500px";
     canvas.style.width = "500px";
     const context = canvas.getContext("2d");
+
     // context.scale(2, 2);
     // Set background color
     if (backgroundColor) {
@@ -25,10 +26,14 @@ const Canvas = ({ backgroundColor }) => {
       context.fillRect(0, 0, canvas.width, canvas.height);
     }
     context.lineCap = "round";
-    context.strokeStyle = canvasBackgroundColor;
+    // context.strokeStyle = brushColor;
     context.lineWidth = 5;
     contextRef.current = context;
-  }, [backgroundColor, canvasBackgroundColor]);
+  }, []);
+  useEffect(() => {
+    contextRef.current.strokeStyle = brushColor;
+    console.log("first");
+  }, [brushColor]);
   const getMousePos = (canvas, evt) => {
     console.log(canvas);
     let rect = canvas.getBoundingClientRect();
@@ -64,7 +69,7 @@ const Canvas = ({ backgroundColor }) => {
           <DownLoadForm canvasRef={canvasRef} />
         </div>
         <div className="bg-Outerspace flex justify-center items-center basis-3/4">
-          <ColorPicker color={canvasBackgroundColor} setColor={setCanvasBackgroundColor}/>
+          <ColorPicker color={brushColor} setColor={setBrushColor} />
           <canvas
             className="bg-white"
             onMouseDown={startDrawing}
