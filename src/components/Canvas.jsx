@@ -15,8 +15,7 @@ const Canvas = ({ backgroundColor }) => {
     //doubling the pixel density to support retina displays
     canvas.width = 500;
     canvas.height = 500;
-    canvas.style.height = "500px";
-    canvas.style.width = "500px";
+
     const context = canvas.getContext("2d");
 
     // context.scale(2, 2);
