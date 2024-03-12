@@ -55,25 +55,55 @@ const Canvas = ({ backgroundColor }) => {
     contextRef.current.closePath();
     setIsDrawing(false);
   };
-  const draw = ({ nativeEvent }) => {
+
+  const getTouchPos = (canvas, touchX, touchY) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    
+    return {
+      offsetX: (touchX - rect.left) * scaleX,
+      offsetY: (touchY - rect.top) * scaleY
+    };
+  };
+
+  const drawTouch= ({ nativeEvent }) => {
+    if (!isDrawing) return;
+    
+    // Check if the touch event has touches
+    if (nativeEvent.touches.length > 0) {
+      // Get the touch position relative to the canvas
+      const { clientX, clientY } = nativeEvent.touches[0];
+      const { offsetX, offsetY } = getTouchPos(canvasRef.current, clientX, clientY);
+      
+      contextRef.current.lineTo(offsetX, offsetY);
+      contextRef.current.stroke();
+    }
+  };
+  const drawMouse = ({ nativeEvent }) => {
     if (!isDrawing) return;
     const { x, y } = getMousePos(canvasRef.current, nativeEvent);
     contextRef.current.lineTo(x, y);
     contextRef.current.stroke();
   };
+
   return (
     <>
       <div className=" h-fit w-full gap-2 flex justify-center max-md:flex-col   ">
         <div className="bg-Outerspace basis-1/4">
           <DownLoadForm canvasRef={canvasRef} />
         </div>
-        <div className="bg-Outerspace flex justify-center items-center basis-3/4">
+        <div className="bg-Outerspace flex justify-center items-center basis-3/4 max-md: flex-col-reverse w-1/2">
           <ColorPicker color={brushColor} setColor={setBrushColor} />
           <canvas
             className="bg-white"
             onMouseDown={startDrawing}
             onMouseUp={finishDrawing}
-            onMouseMove={draw}
+            onMouseMove={drawMouse}
+            onTouchStart={startDrawing}
+            onTouchEnd={finishDrawing}
+            onTouchMove={drawTouch}
+        
             ref={canvasRef}
           />
         </div>
